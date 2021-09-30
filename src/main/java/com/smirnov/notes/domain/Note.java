@@ -19,9 +19,10 @@ public class Note {
     @Column(name = "type_message")
     private String typeMessage;
 
-    @ElementCollection
-    @CollectionTable(name="note_user", joinColumns=@JoinColumn(name="note_id"))
-    private List<User> users;
+    @ManyToOne
+    User user;
+
+
 
     public long getId() {
         return id;
@@ -47,12 +48,12 @@ public class Note {
         this.typeMessage = type_message;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public User getUser() {
+        return user;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

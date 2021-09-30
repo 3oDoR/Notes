@@ -2,6 +2,7 @@ package com.smirnov.notes.controller;
 
 
 import com.smirnov.notes.domain.Note;
+import com.smirnov.notes.domain.User;
 import com.smirnov.notes.repos.NoteRepository;
 import com.smirnov.notes.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +37,12 @@ public class TaskListController {
 
     @GetMapping("/task_list")
     public String taskList(Model model) {
-        model.addAttribute("notesToDo", noteRepository.findByTypeMessage("ToDo"));
-        model.addAttribute("notesDoing", noteRepository.findByTypeMessage("Doing"));
-        model.addAttribute("notesDone", noteRepository.findByTypeMessage("Done"));
+        Long userId = userRepository.findByUsername(username()).getId();
+
+
+        model.addAttribute("notesToDo", noteRepository.findByTypeMessageAndUserId("ToDo", userId));
+        model.addAttribute("notesDoing", noteRepository.findByTypeMessageAndUserId("Doing", userId));
+        model.addAttribute("notesDone", noteRepository.findByTypeMessageAndUserId("Done", userId));
 
 
         return "task_list";
@@ -47,6 +51,8 @@ public class TaskListController {
     @PostMapping("/task_list")
     public String addNote(Note note, String typeMessage) {
         note.setTypeMessage(typeMessage);
+        User byUsername = userRepository.findByUsername(username());
+        note.setUser(byUsername);
         noteRepository.save(note);
         return "redirect:/task_list";
     }
